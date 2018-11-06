@@ -16,6 +16,7 @@
 ### Catalog description
 - demos: sample programs
 - docs: documentation
+- docs_zh: chinese documentation
 - image: images references for documentation
 - renderSDK: source code
 - scenes: test scenes
