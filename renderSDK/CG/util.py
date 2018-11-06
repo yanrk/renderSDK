@@ -148,7 +148,7 @@ def transcoding(render_task_cfg):
 
 
 def wrap_subprocess(cmd):
-    """用于把脚本打包成exe的时候方便修改subprocess"""
+    """It is convenient to modify subprocess when packaging scripts into exe formmat"""
     si = subprocess.STARTUPINFO()
     si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     p = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True, startupinfo=si)
@@ -165,9 +165,9 @@ def check_contain_chinese(string):
 
 
 def test_convert_path():
-    p1 = r"\\10.60.100.101\s\scene\as\qq.jpg"
+    p1 = r"\\1.6.1.1\s\scene\as\qq.jpg"
     p2 = r"d:/xx/bbb/xxx.jpg"
-    assert convert_path("", p1) == "//10.60.100.101/s/scene/as/qq.jpg"
+    assert convert_path("", p1) == "//1.6.1.1/s/scene/as/qq.jpg"
     assert convert_path("", p2) == "/d/xx/bbb/xxx.jpg"
 
 

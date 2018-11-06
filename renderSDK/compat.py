@@ -26,7 +26,7 @@ if is_py2:
 
 
     def to_bytes(data):
-        """若输入为unicode， 则转为utf-8编码的bytes；其他则原样返回。"""
+        """ If the input is unicode, it will be converted to utf-8 encoded bytes; others will be returned to original way. """
         if isinstance(data, unicode):
             return data.encode('utf-8')
         else:
@@ -34,12 +34,12 @@ if is_py2:
 
 
     def to_string(data):
-        """把输入转换为str对象"""
+        """Convert input to str object"""
         return to_bytes(data)
 
 
     def to_unicode(data):
-        """把输入转换为unicode，要求输入是unicode或者utf-8编码的bytes。"""
+        """Convert the input to unicode, input is required to be unicode or utf-8 encoded bytes."""
         if isinstance(data, bytes):
             return data.decode('utf-8')
         else:
@@ -47,7 +47,7 @@ if is_py2:
 
 
     def stringify(input):
-        """若输入对象中的字符串子对象为unicode编码，则转成utf-8的bytes；其他则原样返回。"""
+        """If the string sub-object in the input object is unicode encoded, it is converted to a byte of utf-8; the other is returned as it is."""
         if isinstance(input, dict):
             return dict([(stringify(key), stringify(value)) for key, value in input.iteritems()])
         elif isinstance(input, list):
@@ -71,7 +71,7 @@ elif is_py3:
     import configparser
 
     def to_bytes(data):
-        """若输入为str（即unicode），则转为utf-8编码的bytes；其他则原样返回"""
+        """If the input is str (ie unicode), it will be converted to utf-8 encoded bytes; others will return as they are."""
         if isinstance(data, str):
             return data.encode(encoding='utf-8')
         else:
@@ -79,7 +79,7 @@ elif is_py3:
 
 
     def to_string(data):
-        """若输入为bytes，则认为是utf-8编码，并返回str"""
+        """If the input is bytes, it is considered to be utf-8 encoding, and returns str"""
         if isinstance(data, bytes):
             return data.decode('utf-8')
         else:
@@ -87,7 +87,7 @@ elif is_py3:
 
 
     def to_unicode(data):
-        """把输入转换为unicode，要求输入是unicode或者utf-8编码的bytes。"""
+        """Convert the input to unicode, input is required to be unicode or utf-8 encoded bytes."""
         return to_string(data)
 
 

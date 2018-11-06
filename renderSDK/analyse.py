@@ -8,10 +8,13 @@ import traceback
 import argparse
 
 from .compat import *
-from .CG.cg_houdini.cg import Houdini
-from .CG.cg_c4d.cg import C4D
-from .CG.cg_maya.cg import Maya
-from .CG.cg_max.cg import Max
+
+if sys.platform.startswith('win'):
+    from .CG.cg_houdini.cg import Houdini
+    from .CG.cg_c4d.cg import C4D
+    from .CG.cg_maya.cg import Maya
+    from .CG.cg_max.cg import Max
+    
 from .RayvisionException import RayvisionError
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -72,17 +75,17 @@ class RayvisionAnalyse(object):
     @classmethod
     def execute(cls, cg_file, job_info, exe_path=None):
         """
-        入口.
+        Entrance.
         :param cg_file:
         :param job_info:
-        :param exe_path: 用户可手动指定 cg 软件的exe路径.如有则直接用这个路径, 无则自己找. # TODO "直接用这个路径"(1/4)
+        :param exe_path: The user can manually specify the exe path of the cg software. If you have one, use this path directly, if not, find it yourself. # TODO "Use this path directly" (1/4)
         :return:
         """
         self = cls(job_info, cg_file, exe_path)
         self.run()
 
     def run(self):
-        """全流程"""
+        """The whole process"""
         self._cg_instance.run()
 
     def analyse_cg_file(self):
