@@ -43,7 +43,7 @@ class RayvisionTransfer(object):
 
     def _parse_transports_json(self):
         """
-        解析transports.json，获取传输服务器信息
+        Analyze transports.json，obtain transfer server info
         """
         if 'foxrenderfarm' in self._domain_name:
             key_first_half = 'foxrenderfarm'
@@ -79,14 +79,14 @@ class RayvisionTransfer(object):
     
     def _upload(self, job_id, cfg_list, upload_info):
         """
-        上传配置文件和资产
+        Upload configuration profiles and assets
         """
         self._upload_cfg(job_id, cfg_list)
         self._upload_asset(upload_info)
     
     def _upload_cfg(self, job_id, cfg_path_list, **kwargs):
         """
-        上传任务配置文件
+        Upload configuration profiles and assets
         """
         transmit_type = "upload_files"  # upload_files/upload_file_pairs/download_files
 
@@ -101,9 +101,9 @@ class RayvisionTransfer(object):
                 print('{0} is not exists.'.format(local_path))
                 continue
 
-            transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" \
-            "{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" \
-            "{keep_path}"'.format(
+            transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
+            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" ' \
+            '"{keep_path}"'.format(
                 exe_path=self._rayvision_exe,
                 engine_type=self._engine_type,
                 server_name=self._server_name,
@@ -124,7 +124,7 @@ class RayvisionTransfer(object):
     
     def _upload_asset(self, upload_info, **kwargs):
         """
-        上传资产
+        Upload assets
         """
         transmit_type = "upload_files"  # upload_files/upload_file_pairs/download_files
 
@@ -137,9 +137,9 @@ class RayvisionTransfer(object):
                 print('{0} is not exists.'.format(local_path))
                 continue
 
-            transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" \
-            "{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" \
-            "{keep_path}"'.format(
+            transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
+            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" ' \
+            '"{keep_path}"'.format(
                 exe_path=self._rayvision_exe,
                 engine_type=self._engine_type,
                 server_name=self._server_name,
@@ -160,7 +160,7 @@ class RayvisionTransfer(object):
 
     def _download(self, task_id, local_dir, **kwargs):
         """
-        TODO：多个任务的下载
+        TODO：Multiple task download
         """
         transmit_type = 'download_files'
         
@@ -174,8 +174,8 @@ class RayvisionTransfer(object):
             items = data.get('items', [])
             for task_result_dict in items:
                 server_folder = task_result_dict['outputFileName']
-                transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" \
-                               "{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}"'.format(
+                transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
+                               '"{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" '.format(
                     exe_path=self._rayvision_exe,
                     engine_type=self._engine_type,
                     server_name=self._server_name,

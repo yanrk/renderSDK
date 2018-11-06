@@ -4,7 +4,7 @@
 import sys
 import os
 
-# 将最外层renderSDK目录加入python的搜索模块的路径集
+# Add renderSDK path to sys.path
 renderSDK_path = r'D:\gitlab\renderSDK'
 sys.path.append(renderSDK_path)
 
@@ -12,13 +12,12 @@ from renderSDK.RayvisionAPI import RayvisionAPI
 
 access_id = r'xxx'
 access_key = r'xxx'
-domain_name = r'task.renderbus.com'
+domain_name = r'task.foxrenderfarm.com'
 platform = '2'
 
 rayvision = RayvisionAPI(domain_name, platform, access_id, access_key, log_obj=True)
 r_data = rayvision.query_platforms()
 print(r_data)
-
 
 # r_data = rayvision.query_platforms()
 # r_data = rayvision.query_user_profile()

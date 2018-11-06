@@ -16,12 +16,12 @@ class RayvisionJob(object):
         self._job_id = job_id
         self._local_os = user_info['local_os']  # "windows"/"linux"
         
-        # work目录
+        # work directory
         self._work_dir = os.path.join(user_info['workspace'], 'work', self._job_id)
         if not os.path.exists(self._work_dir):
             os.makedirs(self._work_dir)
         
-        # log目录
+        # log directory
         self._log_dir = os.path.join(user_info['workspace'], 'log', 'analyse')
         if not os.path.exists(self._log_dir):
             os.makedirs(self._log_dir)
@@ -38,28 +38,30 @@ class RayvisionJob(object):
 
         self._task_info = {
             'task_info': {
-                'input_cg_file': '',  # 提交场景文件路径
-                'is_picture': '0',  # 是否渲染效果图。0: False, 1: True
-                'task_id': self._job_id,  # 作业id
-                'frames_per_task': '1',  # 一机渲多帧的帧数量
-                'test_frames': '000',  # 优先渲染
-                'job_stop_time': '28800',  # 小任务超时停止，单位秒。默认8小时
-                'task_stop_time': '86400',  # 大任务超时停止，单位秒。默认24小时
-                'time_out': '12',  # 超时时间，变黄。单位小时。默认12小时
-                'stop_after_test': '2',  # 优先渲染完成后是否暂停任务,1:优先渲染完成后暂停任务 2.优先渲染完成后不暂停任务
-                'project_name': '',  # 项目名称
-                'project_id': '',  # 项目id
-                'channel': '4',  # 提交方式
-                'cg_id': '',  # 渲染软件id
-                'platform': user_info['platform'],  # 提交平台
-                'tiles_type': 'block',  #  "block(分块),strip(分条)"
-                'tiles': '1',  # 分块数量 大于1就分块或者分条 等于1 就是单机
-                'is_layer_rendering': '1',  # maya是否开启分层。"0":关闭 "1":开启
-                'is_distribute_render': '0',  # 是否开启分布式渲染。"0":关闭 "1":开启
-                'distribute_render_node': '3',  # 分布式渲染机器数
-                'input_project_path':'',  # 项目路径，如未设置传空字符串
-                'render_layer_type':'0',  # 渲染层方式选择。"0"：renderlayer方式；"1"：rendersetup方式
-                'user_id': user_info['user_id']  # 用户ID
+                'input_cg_file': '',  # The scene file path
+                'is_picture': '0',  # Choose if it is the rendered effect picture or not。0: False, 1: True
+                'task_id': self._job_id,  # job id
+                'frames_per_task': '1',  # Quantity of frames that rendered on one machine
+                'pre_frames': '000',  # The frames of test render
+                'job_stop_time': '28800',  # Small task stopped due to timingout，unite is second。default is 8 hours
+                'task_stop_time': '86400',  # Big task stopped due to timingout，unite is second。default is 24 hours
+                'time_out': '12',  # time-out period，turn into yellow color。unite is second。default is 12 hours
+                'stop_after_test': '2',  # Whether to pause the task after the priority rendering is completed, 1: Pause the task after the priority rendering is completed 2. Do not pause the task after the priority rendering is completed
+                'project_name': '',  # Project name
+                'project_id': '',  # Project id
+                'channel': '4',  # Submit method
+                'cg_id': '',  # Render software id
+                'platform': user_info['platform'],  # Submit platform
+                'tiles_type': 'block',  #  "block(block-based),strip(strip-based)"
+                'tiles': '1',  # If the number of blocks is greater than 1,  or stripe is equal to 1 , then it is a single machine.
+                'is_layer_rendering': '1',  # If maya has turned on the layers。"0":Turn off "1":Turn on
+                'is_distribute_render': '0',  # Whether to turn on the distributed rendering。"0":Turn off"1":Turn on
+                'distribute_render_node': '3',  # The quantities of distributed rendering machine
+                'input_project_path':'',  # Project path，transfer the empty string if not setting up
+                'render_layer_type':'0',  # Render layer mode selection。"0"：renderlayer mode；"1"：rendersetup mode
+                'user_id': user_info['user_id'],  # User ID
+                'os_name': '1',  # rendering os type。"0": Linux;  "1": Windows
+                'ram': '64'  # rendering machine RAM。"64": 64G；"128": 128G
             },
             'software_config': {},
             'scene_info': {},

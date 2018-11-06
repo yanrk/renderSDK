@@ -9,6 +9,7 @@
 - [x] Maya
 - [x] 3ds Max
 - [x] Houdini
+- [x] Katana
     
 ### 2: RenderSDK user guide
 **Attention：**
@@ -20,17 +21,7 @@
 
 **User guide：**
 
-```
-graph TD
-A[Log in] --> B(Set up render environment)
-B --> C(Analysis)
-C --> D(Manually Check & fix errors and cautions before proceeding)
-D --> E(Job sumbit)
-B --> E
-E --> F(Download)
-```
-
-![flow_chart](../images/flow_chart_en.png)
+![flow_chart](../images/SDK Basic User Manual.png)
 
 ### 3: Sample code
 
@@ -52,7 +43,7 @@ from renderSDK.Rayvision import Rayvision
 rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
 
 # 2. Set up render environment（Plug-in settings、Project settings）
-rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
+job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
 
 # 3.Analysis
 scene_info_render, task_info = rayvision.analyse(cg_file=r'D:\gitlab\renderSDK\scenes\TEST_maya2016_ocean.mb')
@@ -88,12 +79,17 @@ from renderSDK.Rayvision import Rayvision
 rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
 
 # 2. Set up render environment（Plug-in settings、Project settings）rayvision.set_job_config(cg_name='Maya', cg_version='2016', plugin_config={})
-rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
+job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
 
-# 3.Job submit（scene_info_render,task_info, see user guide document for details）
-rayvision.submit_job(scene_info_render_new, task_info_new)
+# 3.Set up render parameter(see docs)
+scene_info_render = {}
+task_info = {}
+upload_info = {}
 
-# 4. Download
+# 4.Job submit
+rayvision.submit_job(scene_info_render, task_info, upload_info)
+
+# 5. Download
 # rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
 ```
 
@@ -126,7 +122,7 @@ Rayvision’s object, may use this object to call other methods
 #### 2. Set up job configuration（Plug-in settings、Project settings）
 
 ```
-rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
+job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
 ```
 ** Parameter：**<br/>
 
@@ -140,7 +136,9 @@ label_name | str | defaultProject | Setting is optional, indicate the belonged j
 
 
 **Return：**<br/>
-True 
+Parameter | Category | Value | Instruction
+---|---|---|---
+job_id | str |  | Job id
 
 
 ---

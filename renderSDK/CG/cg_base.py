@@ -150,7 +150,7 @@ class CGBase(object):
         return d
 
     def write_cg_path(self):
-        """把 cg_file 和 cg_id 写进 task_info"""
+        """Write cg_file and cg_id into task_info"""
         cg_id = self.cg_id
         cg_file = self.cg_file
         task_info = self.job_info._task_info["task_info"]
@@ -160,7 +160,7 @@ class CGBase(object):
         util.json_save(self.job_info._task_json_path, self.job_info._task_info, ensure_ascii=False)
 
     def json_exist(self):
-        """如果没有生成 json 文件, 判断分析失败"""
+        """If the json file is not generated, the analysis fails."""
         task_path = self.job_info._task_json_path
         asset_path = self.job_info._asset_json_path
         tips_path = self.job_info._tips_json_path

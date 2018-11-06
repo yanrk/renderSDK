@@ -1,19 +1,19 @@
 # -*- coding:utf-8 -*-
-# 场景文件已损坏或者被压缩
+# Scene file is corrupted or compressed
 error9900_max_damage = 'Scene has damged or been compressed'
-# 未找到场景使用的3ds Max 软件版本
+# The 3ds Max software version used by the scene was not found
 error9899_maxexe_notexist = '3ds Max software of scene has not been found'
-# 场景文件用的3dsmax版本和项目配置的3dsmax版本不一致
+# 3dsmax version of the scene file is inconsistent with the 3dsmax version of the project configuration
 error9898_project_maxversion = '3ds Max version of scene is different from the version you configured for the project'
-# 获取3ds Max 软件版本失败
+# Get 3ds Max software version failed
 error_getcgversion_exception = 'Getting 3ds Max software version failed'
-# 渲染器丢失
+# Renderer is missing
 error_getrenderer_exception = 'Missing renderer'
-# 获取3ds Max 软件版本失败
+# Get 3ds Max software version failed
 error_getcglocation_exception = 'Getting 3ds Max software version failed'
 error_multiscatterandvray_confilict = '{} is not compatible with {}'
 
-# 获取场景信息失败，可能场景文件已损坏或者被压缩，或者使用了非英文版本制作。
+# Failed to get the scene information. The scene file may be damaged or compressed, or a non-English version may be used.
 msg_getmaxinfo_failed = 'Get max file info failed,Scene maybe has damged or been compressed'
 error_getmaxinfo_failed = msg_getmaxinfo_failed
 progress_getmaxinfo = 'get max file info start'
@@ -27,21 +27,21 @@ progress_endpackmax = 'Compress 3dsmax scene to 7zip successfully'
 progress_subSuccessed = 'Submit task successfully'
 progress_subFailed = 'Submit task failed'
 
-# 项目配置的版本和场景版本不匹配
+# Project configuration version and scene version do not match
 version_not_match = "Project configuration version and scenario version mismatch"
 
-# -----------------------------------以下是把"软件"换成"CG", 软件名字可以用self.version_str拼接-------------------------------------------
-# 未找到场景使用的3ds Max 软件版本
+# ----------------------------------- The following is the replacement of "software" with "CG", the software name Can be stitched with self.version_str -------------------------------------------
+# The 3ds Max software version used by the scene was not found
 error9899_cgexe_notexist = '{} software of scene has not been found'
-# 场景文件用的3dsmax版本和项目配置的3dsmax版本不一致
+# 3dsmax version of the scene file is inconsistent with the 3dsmax version of the project configuration
 error9898_project_versfion = '{} version of scene is different from the version you configured for the project'
-# 获取3ds Max 软件版本失败
+# Get 3ds Max software version failed
 error_getcgversion_exception = 'Getting {} software version failed'
-# 获取3ds Max 软件版本失败
+# Get 3ds Max software version failed
 error_getcglocation_exception = 'Getting {} software version failed'
 error_multiscatterandvray_confilict = '{} is not compatible with {}'
 
-# 获取场景信息失败，可能场景文件已损坏或者被压缩，或者使用了非英文版本制作。
+# Failed to get the scene information. The scene file may be damaged or compressed, or a non-English version may be used.
 msg_get_cg_info_failed = 'Get {} file info failed,Scene maybe has damged or been compressed'
 error_get_cg_info_failed = msg_get_cg_info_failed
 progress_getcginfo = 'get {} file info start'

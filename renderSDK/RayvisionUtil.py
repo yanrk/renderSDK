@@ -53,6 +53,52 @@ cg_id_name_dict = {
     '2016': 'Katana'
 }
 
+job_status_description_dict = {
+    "0":{
+        "0":"等待中",
+        "1":"Waiting"
+    },
+    "5":{
+        "0":"渲染中",
+        "1":"Rendering"
+    },
+    "8":{
+        "0":"预处理中",
+        "1":"Preprocessing"
+    },
+    "10":{
+        "0":"停止",
+        "1":"Stop"
+    },
+    "20":{
+        "0":"欠费停止",
+        "1":"Arrearage-stop"
+    },
+    "23":{
+        "0":"超时停止",
+        "1":"Timeout stop"
+    },
+    "25":{
+        "0":"已完成",
+        "1":"Done"
+    },
+    "30":{
+        "0":"已完成(有失败帧)",
+        "1":"Done(with failed frame)"
+    },
+    "35":{
+        "0":"放弃",
+        "1":"Abort"
+    },
+    "40":{
+        "0":"等待全速渲染",
+        "1":"Test done"
+    },
+    "45":{
+        "0":"失败",
+        "1":"Failed"
+    }
+}
 
 def get_os():
     """
@@ -79,9 +125,9 @@ def get_os():
 
 def hump2underline(hump_str):
     """
-    将驼峰形式字符串转成下划线形式
-    :param str hump_str: 驼峰形式字符串
-    :return: 字母全小写的下划线形式字符串
+    Convert the hump  form string to an underscore
+    :param str hump_str: hump  form string
+    :return: All lowercase underlined string of letters
     :rtype: str
     """
     patt = re.compile(r'([a-z]|\d)([A-Z])')
@@ -177,4 +223,24 @@ def run_cmd(cmd_str, my_shell=True, log_obj=None):
 
     return True
     
+    
+def get_job_status_description(job_status_code=None, job_status_text=None, language='1'):
+    """
+    Input job_status_code or job_status_text to get job status description.
+    :param str job_status_code: "40"
+    :param str job_status_text: "render_task_status_40"
+    :param str language: "0": Simplified Chinese; "1": English
+    """
+    job_status_code = job_status_code
+    if job_status_text is not None:
+        job_status_code = job_status_text.split('_')[-1]
+        
+    if job_status_code is None:
+        raise RayvisionError(1000000, r'Please input job_status_code or job_status_text!')
+    
+    job_status_description = job_status_description_dict.get(str(job_status_code), {}).get(str(language), '')
+    if job_status_description == '':
+        print('[warn]Get empty job_status_description, Please check the input.')
+    
+    return job_status_description
     

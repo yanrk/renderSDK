@@ -69,18 +69,18 @@ def main():
     exe_path = os.path.abspath(os.path.join("tool/zip", "windows", "7z.exe"))
     zip = Zip7z(exe_path)
     files = [
-        r"D:\30089034\_STP00000_大餐厅全景_142344_0000.exr",
-        r"D:\30089034\_STP00001_大餐厅全景_142344_0000.exr",
-        r"D:\30089034\_STP00002_大餐厅全景_142344_0000.exr",
-        r"D:\30089034\_STP00003_大餐厅全景_142344_0000.exr",
-        r"D:\30089034\_STP00004_大餐厅全景_142344_0000.exr",
-        r"D:\30089034\_STP00005_大餐厅全景_142344_0000.exr",
+        r"D:\30089034\_STP00000_restaurant panorama_142344_0000.exr",
+        r"D:\30089034\_STP00001_restaurant panorama_142344_0000.exr",
+        r"D:\30089034\_STP00002_restaurant panorama_142344_0000.exr",
+        r"D:\30089034\_STP00003_restaurant panorama_142344_0000.exr",
+        r"D:\30089034\_STP00004_restaurant panorama_142344_0000.exr",
+        r"D:\30089034\_STP00005_restaurant panorama_142344_0000.exr",
     ]
 
     # zip.pack(files=files, dest="d:\\30089034\\testall.jpg.7z")
 
     zip_name = r"D:\30089034/testall.jpg.7z"
-    dest = r"D:\test_unpack"  # 目录不存在 7z 会自己新建
+    dest = r"D:\test_unpack"  # Directory does not exist 7z will create a new one
     zip.unpack(zip_name, dest)
 
 
