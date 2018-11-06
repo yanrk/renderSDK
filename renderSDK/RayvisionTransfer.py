@@ -16,9 +16,10 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 class RayvisionTransfer(object):
-    def __init__(self, user_info, api_obj, log_obj=None):
+    def __init__(self, user_info, api_obj, manage_job_obj, log_obj=None):
         self._user_info = user_info
         self._api_obj = api_obj
+        self._manage_job_obj = manage_job_obj
         self.G_SDK_LOG = log_obj
         
         self._domain_name = user_info.get('domain_name')
@@ -158,36 +159,54 @@ class RayvisionTransfer(object):
             # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
             RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
 
-    def _download(self, task_id, local_dir, **kwargs):
+    def _download(self, job_id_list, local_dir, **kwargs):
         """
         TODO：Multiple task download
         """
         transmit_type = 'download_files'
-        
         local_dir = RayvisionUtil.str2unicode(local_dir)
-        
-        task_id_list = []
-        task_id_list.append(int(task_id))
-        
-        data = self._api_obj.query_task_info(task_id_list)
-        if data:
-            items = data.get('items', [])
-            for task_result_dict in items:
-                server_folder = task_result_dict['outputFileName']
-                transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
-                               '"{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" '.format(
-                    exe_path=self._rayvision_exe,
-                    engine_type=self._engine_type,
-                    server_name=self._server_name,
-                    server_ip=self._server_ip,
-                    server_port=self._server_port,
-                    download_id=self._user_info['output_bid'],
-                    user_id=self._user_id,
-                    transmit_type=transmit_type,
-                    local_path=local_dir,
-                    server_path=server_folder,
-                )
-                # print transmit_cmd
-                sys.stdout.flush()
-                # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
-                RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
+
+        job_status_list = self._manage_job_obj.get_job_status(job_id_list)
+        output_file_name_list = self._find_output_file_name_iterater(job_status_list)
+
+        for output_file_name in output_file_name_list:
+            transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
+                           '"{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" '.format(
+                exe_path=self._rayvision_exe,
+                engine_type=self._engine_type,
+                server_name=self._server_name,
+                server_ip=self._server_ip,
+                server_port=self._server_port,
+                download_id=self._user_info['output_bid'],
+                user_id=self._user_id,
+                transmit_type=transmit_type,
+                local_path=local_dir,
+                server_path=output_file_name,
+            )
+            # print transmit_cmd
+            sys.stdout.flush()
+            # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
+            RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
+
+
+    def _find_output_file_name_iterater(self, job_status_list):
+        """
+        Find output_file_name from job_status_list
+        :param job_status_list: self._manage_job_obj.get_job_status(job_id_list)
+        :param dest_list: dest_list
+        :return:
+        """
+        dest_list = []
+        for job_status_dict in job_status_list:
+            output_file_name = job_status_dict.get('output_file_name', None)
+            # is_opener = job_status_dict.get('is_opener')
+            sub_job_status = job_status_dict.get('sub_job_status', [])
+
+            if output_file_name is not None:
+                dest_list.append(output_file_name)
+
+            if sub_job_status:
+                dest_list_sub = self._find_output_file_name_iterater(sub_job_status)
+                dest_list.extend(dest_list_sub)
+
+        return dest_list

@@ -27,6 +27,7 @@ class RayvisionManageJob(object):
                     "job_status_text":"render_task_status_25",
                     "job_status_description":"Done",
                     "is_opener":"0",
+                    "output_file_name":"111_test",
                     "sub_job_status":[]
                 },
                 {
@@ -35,6 +36,7 @@ class RayvisionManageJob(object):
                     "job_status_text":"render_task_status_0",
                     "job_status_description":"Waiting",
                     "is_opener":"1",
+                    "output_file_name":None,
                     "sub_job_status":[
                         {
                             "job_id":"333",
@@ -42,6 +44,7 @@ class RayvisionManageJob(object):
                             "job_status_text":"render_task_status_25",
                             "job_status_description":"Done",
                             "is_opener":"0",
+                            "output_file_name":"333_test",
                             "sub_job_status":[]
                         }
                     ]
@@ -69,6 +72,7 @@ class RayvisionManageJob(object):
             job_status_code = task_info.get('taskStatus')  # e.g. 25
             job_status_text = task_info.get('statusText')  # e.g. "render_task_status_25"
             is_opener = task_info.get('isOpen')  # 0: have not sub_job_status; 1:have sub_job_status
+            output_file_name = task_info.get('outputFileName')  # download directory name
             job_status_description = RayvisionUtil.get_job_status_description(job_status_code)
             sub_job_status = []
             if int(is_opener) == 1:
@@ -80,6 +84,7 @@ class RayvisionManageJob(object):
             job_status_dict['job_status_text'] = str(job_status_text)
             job_status_dict['job_status_description'] = job_status_description
             job_status_dict['is_opener'] = str(is_opener)
+            job_status_dict['output_file_name'] = output_file_name
             job_status_dict['sub_job_status'] = sub_job_status
             
             job_status_list.append(job_status_dict)

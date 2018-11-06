@@ -63,8 +63,8 @@ class Rayvision(object):
         }
         self._api_obj = RayvisionAPI(domain_name, platform, access_id, access_key, log_obj=self.G_SDK_LOG)
         self._login()  # update self._user_info
-        self._transfer_obj = RayvisionTransfer(self._user_info, self._api_obj, log_obj=self.G_SDK_LOG)
         self._manage_job_obj = RayvisionManageJob(self._api_obj)
+        self._transfer_obj = RayvisionTransfer(self._user_info, self._api_obj, self._manage_job_obj, log_obj=self.G_SDK_LOG)
 
     @decorator_use_in_class(SDK_LOG)
     def set_render_env(self, cg_name, cg_version, plugin_config={}, edit_name=None, label_name=None):
@@ -220,9 +220,9 @@ class Rayvision(object):
         self.G_SDK_LOG.info('job_id_list:{0}'.format(job_id_list))
         self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
         self.G_SDK_LOG.info('='*20)
-        
-        for job_id in job_id_list:
-            self._transfer_obj._download(job_id, local_dir)
+
+        self._transfer_obj._download(job_id_list, local_dir)
+
         return True
 
     def _init_log(self, log_obj, log_path, is_print_log=True):
