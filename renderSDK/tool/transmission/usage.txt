@@ -1,5 +1,5 @@
 usage:
-    rayvision_transmitter.exe engine_type server_name server_host server_port storage_id user_id transmit_type local_path remote_path [max_connect_failure_count] [keep_path]
+    rayvision_transmitter.exe engine_type server_name server_host server_port storage_id user_id transmit_type local_path remote_path [max_connect_failure_count] [keep_path] [max_speed]
 
 sample:
     D:\test\rayvision_transmitter.exe rayvision AL 42.123.110.42 8885 3442 100001 upload_files D:\storage\input /
@@ -15,3 +15,4 @@ notes:
     4. 'engine_type' support 'tcp', 'rayvision', 'aspera' and 'typhoon'
     5. 'transmit_type' support 'upload_files', 'download_files', 'upload_file_list', 'download_file_list' and 'upload_file_pairs'
     6. when 'transmit_type' is 'upload_file_list', 'download_file_list' or 'upload_file_pairs', the file-list/file-pairs content line is a path which must use utf8-encoding
+    7. the unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
