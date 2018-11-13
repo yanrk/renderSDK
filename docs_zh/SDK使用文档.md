@@ -198,7 +198,7 @@ error_info_list | list |  | 分析出的错误、警告信息，需要用户自�
 
 #### 5.提交任务（可修改作业参数）
 ```
-rayvision.submit_job(scene_info_render, task_info)
+rayvision.submit_job(scene_info_render, task_info, max_speed=100)
 ```
 
 **参数：**<br/>
@@ -207,6 +207,7 @@ rayvision.submit_job(scene_info_render, task_info)
 ---|---|---|---
 scene_info_render | dict |  | 场景参数（用于渲染）
 task_info | dict |  | 作业参数（用于渲染）
+max_speed | int | 100 | 上传速度限制.默认值为 1048576 KB/S, 即 1 GB/s
 
 
 **返回：**<br/>
@@ -216,7 +217,7 @@ True
 
 #### 6.下载
 ```
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output", max_speed=100)
 ```
 
 **参数：**<br/>
@@ -225,6 +226,7 @@ True
 ---|---|---|---
 job_id_list | list<int> |  | 作业号列表
 local_dir | str |  | 下载存放目录
+max_speed | int | 100 | 下载速度限制.默认值为 1048576 KB/S, 即 1 GB/s
 
 
 **返回：**<br/>

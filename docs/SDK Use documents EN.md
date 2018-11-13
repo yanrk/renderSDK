@@ -104,7 +104,7 @@ rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id=
 
 **Parameter：**<br/>
 
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 domain_name | str | task.foxrenderfarm.com, task.renderbus.com | 
 platform | str | 2, 8, 9, 10 | platform
@@ -126,7 +126,7 @@ job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_conf
 ```
 ** Parameter：**<br/>
 
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 cg_name | str | Maya, 3ds Max, Houdini | Spelling is case sensitive
 cg_version | str | 2014, 2015 ... | 
@@ -136,7 +136,7 @@ label_name | str | defaultProject | Setting is optional, indicate the belonged j
 
 
 **Return：**<br/>
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 job_id | str |  | Job id
 
@@ -150,7 +150,7 @@ scene_info_render, task_info = rayvision.analyse(cg_file=r'D:\gitlab\renderSDK\s
 
 ** Parameter：**<br/>
 
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 cg_file | str |  | Scene path
 project_dir | str |  | Setting is optional, project catalogue(if setting up, just detect according asset files required for rendering in your project catalogue)  
@@ -158,7 +158,7 @@ project_dir | str |  | Setting is optional, project catalogue(if setting up, jus
 
 **Return：**<br/>
 
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 scene_info_render | dict |  | The analyzed scene parameters（for rendering）, able to edit task_info | dict |  | Job parameter(for rendering), can be edited 
 
@@ -171,14 +171,14 @@ error_info_list = rayvision.check_error_warn_info()
 
 ** Parameter：**<br/>
 
-Parameter | Category | Value | Instruction
+Parameter | Type | Value | Instruction
 ---|---|---|---
 language | str | '0' | 0: chinese 1: English
 
 
 **Return：**<br/>
 
-Parameter | Category | Value | Instruction 
+Parameter | Type | Value | Instruction 
 ---|---|---|---
 error_info_list | list |  | Manually check & fix errors and cautions before proceeding（If errors and alert occurred, SDK is not able to be proceeded）
 
@@ -188,15 +188,16 @@ error_info_list | list |  | Manually check & fix errors and cautions before proc
 ```
 scene_info_render_new = scene_info_render
 task_info_new = task_info
-rayvision.submit_job(scene_info_render_new, task_info_new)
+rayvision.submit_job(scene_info_render_new, task_info_new, max_speed=100)
 ```
 
 **Parameter：**<br/>
 
-Parameter | Category | Value | Instruction 
+Parameter | Type | Value | Instruction 
 ---|---|---|---
 scene_info_render | dict |  | Scene parameter(for rendering)
-task_info | dict |  | Job parameter（for rendering）
+task_info | dict |  | Job parameter(for rendering)
+max_speed | int | 100 | Upload speed limit.Default value is 1048576 KB/S, means 1 GB/S
 
 
 **Return：**<br/>
@@ -206,15 +207,16 @@ True
 
 #### 6.Download
 ```
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output", max_speed=100)
 ```
 
 ** Parameter：**<br/>
 
-Parameter | Category | Value | Instruction 
+Parameter | Type | Value | Instruction 
 ---|---|---|---
 job_id_list | list<int> |  | Job id list
 local_dir | str |  | Local download
+max_speed | int | 100 | Download speed limit.Default value is 1048576 KB/S, means 1 GB/S
 
 
 **Return：**<br/>
