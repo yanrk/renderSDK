@@ -56,7 +56,7 @@ class RayvisionTransfer(object):
         elif self._platform == '3':
             key_second_half = 'www3'
         elif self._platform == '4':
-            key_second_half = 'www3'
+            key_second_half = 'www4'
         elif self._platform == '9':
             key_second_half = 'www9'
         elif self._platform == '20':  # pic
@@ -78,18 +78,19 @@ class RayvisionTransfer(object):
             transports_info = json.load(f)
         return transports_info[key]
     
-    def _upload(self, job_id, cfg_list, upload_info):
+    def _upload(self, job_id, cfg_list, upload_info, max_speed=None):
         """
         Upload configuration profiles and assets
         """
-        self._upload_cfg(job_id, cfg_list)
-        self._upload_asset(upload_info)
+        self._upload_cfg(job_id, cfg_list, max_speed)
+        self._upload_asset(upload_info, max_speed)
     
-    def _upload_cfg(self, job_id, cfg_path_list, **kwargs):
+    def _upload_cfg(self, job_id, cfg_path_list, max_speed=None, **kwargs):
         """
         Upload configuration profiles and assets
         """
         transmit_type = "upload_files"  # upload_files/upload_file_pairs/download_files
+        max_speed = str(max_speed) if max_speed is not None else "1048576"  # the unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
 
         for cfg_path in cfg_path_list:
             local_path = RayvisionUtil.str2unicode(cfg_path)
@@ -103,8 +104,8 @@ class RayvisionTransfer(object):
                 continue
 
             transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
-            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" ' \
-            '"{keep_path}"'.format(
+                            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" ' \
+                            '"{max_connect_failure_count}" "{keep_path}" "{max_speed}"'.format(
                 exe_path=self._rayvision_exe,
                 engine_type=self._engine_type,
                 server_name=self._server_name,
@@ -116,18 +117,20 @@ class RayvisionTransfer(object):
                 local_path=local_path.replace('\\', '/'),
                 server_path=server_path.replace('\\', '/'),
                 max_connect_failure_count='1',  # default is 1
-                keep_path='false'
+                keep_path='false',
+                max_speed=max_speed
             )
             # print transmit_cmd
             sys.stdout.flush()
             # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
             RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
     
-    def _upload_asset(self, upload_info, **kwargs):
+    def _upload_asset(self, upload_info, max_speed=None, **kwargs):
         """
         Upload assets
         """
         transmit_type = "upload_files"  # upload_files/upload_file_pairs/download_files
+        max_speed = str(max_speed) if max_speed is not None else "1048576"  # the unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
 
         for file_local_server in upload_info['asset']:
             local_path = file_local_server['local']
@@ -139,8 +142,8 @@ class RayvisionTransfer(object):
                 continue
 
             transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
-            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" "{max_connect_failure_count}" ' \
-            '"{keep_path}"'.format(
+                            '"{storage_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" ' \
+                            '"{max_connect_failure_count}" "{keep_path}" "{max_speed}"'.format(
                 exe_path=self._rayvision_exe,
                 engine_type=self._engine_type,
                 server_name=self._server_name,
@@ -152,26 +155,29 @@ class RayvisionTransfer(object):
                 local_path=local_path.replace('\\', '/'),
                 server_path=server_path.replace('\\', '/'),
                 max_connect_failure_count='1',  # default is 1
-                keep_path='false'
+                keep_path='false',
+                max_speed=max_speed
             )
             # print transmit_cmd
             sys.stdout.flush()
             # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
             RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
 
-    def _download(self, job_id_list, local_dir, **kwargs):
+    def _download(self, job_id_list, local_dir, max_speed=None, **kwargs):
         """
         TODO：Multiple task download
         """
         transmit_type = 'download_files'
         local_dir = RayvisionUtil.str2unicode(local_dir)
+        max_speed = str(max_speed) if max_speed is not None else "1048576"  # the unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
 
         job_status_list = self._manage_job_obj.get_job_status(job_id_list)
         output_file_name_list = self._find_output_file_name_iterater(job_status_list)
 
         for output_file_name in output_file_name_list:
             transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
-                           '"{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" '.format(
+                            '"{download_id}" "{user_id}" "{transmit_type}" "{local_path}" "{server_path}" ' \
+                            '"{max_connect_failure_count}" "{keep_path}" "{max_speed}"'.format(
                 exe_path=self._rayvision_exe,
                 engine_type=self._engine_type,
                 server_name=self._server_name,
@@ -182,6 +188,9 @@ class RayvisionTransfer(object):
                 transmit_type=transmit_type,
                 local_path=local_dir,
                 server_path=output_file_name,
+                max_connect_failure_count='1',  # default is 1
+                keep_path='true',
+                max_speed=max_speed
             )
             # print transmit_cmd
             sys.stdout.flush()

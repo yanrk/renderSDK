@@ -192,7 +192,7 @@ class Rayvision(object):
         return self.error_warn_info_list
 
     @decorator_use_in_class(SDK_LOG)
-    def submit_job(self, scene_info_render=None, task_info=None, upload_info=None):
+    def submit_job(self, scene_info_render=None, task_info=None, upload_info=None, max_speed=None):
         """
         Submit job
         (1) Determine if there are any errors or warnings
@@ -201,19 +201,22 @@ class Rayvision(object):
         (4) Submit the job ID
         :param dict scene_info_render: rendering parameters
         :param dict task_info: task parameters
+        :param dict upload_info: upload files infomations
+        :param int max_speed: Upload speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
         """
         self._is_scene_have_error()  # check error
         
         self._edit_param(scene_info_render, task_info, upload_info)
-        self._upload()
+        self._upload(max_speed)
         self._submit_job()
 
     @decorator_use_in_class(SDK_LOG)
-    def download(self, job_id_list, local_dir):
+    def download(self, job_id_list, local_dir, max_speed=None):
         """
         Download
         :param list<int> job_id_list:Job ID
         :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
         """
         self.G_SDK_LOG.info('INPUT:')
         self.G_SDK_LOG.info('='*20)
@@ -221,7 +224,7 @@ class Rayvision(object):
         self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
         self.G_SDK_LOG.info('='*20)
 
-        self._transfer_obj._download(job_id_list, local_dir)
+        self._transfer_obj._download(job_id_list, local_dir, max_speed)
 
         return True
 
@@ -369,7 +372,7 @@ class Rayvision(object):
         
         return True
 
-    def _upload(self):
+    def _upload(self, max_speed=None):
         cfg_list = []
         root = self._job_info._work_dir
         for file_name in os.listdir(self._job_info._work_dir):
@@ -378,7 +381,7 @@ class Rayvision(object):
             file_path = os.path.join(root, file_name)
             cfg_list.append(file_path)
 
-        self._transfer_obj._upload(self._job_info._job_id, cfg_list, self._job_info._upload_info)  # upload assets and config files
+        self._transfer_obj._upload(self._job_info._job_id, cfg_list, self._job_info._upload_info, max_speed)  # upload assets and config files
         return True
 
     def _submit_job(self):
