@@ -17,13 +17,18 @@ import hmac
 import base64
 import copy
 import collections
-import ssl
 from numbers import Number
 
 from .RayvisionException import APIError
 from .RayvisionUtil import print_sth
 
-ssl._create_default_https_context = ssl._create_unverified_context
+try:  # Python 2.7.9+
+    # solve urlopen HTTPS url will verify SSL certificate
+    import ssl
+    ssl._create_default_https_context = ssl._create_unverified_context
+except:
+    pass
+
 
 class RayvisionAPI(object):
     def __init__(self, domain_name, platform, access_id, access_key, log_obj=None):
