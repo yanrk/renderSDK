@@ -30,6 +30,24 @@ except:
     pass
 
 
+class HTTPErrorProcessorNew(urllib2.HTTPErrorProcessor):
+    """Process HTTP error responses."""
+    handler_order = 1000  # after all other processing
+
+    def http_response(self, request, response):
+        code, msg, hdrs = response.code, response.msg, response.info()
+
+        # According to RFC 2616, "2xx" code indicates that the client's
+        # request was successfully received, understood, and accepted.
+        if (not (200 <= code < 300)) and code != 400:
+            response = self.parent.error(
+                'http', request, response, code, msg, hdrs)
+
+        return response
+
+    https_response = http_response
+
+
 class RayvisionAPI(object):
     def __init__(self, domain_name, platform, access_id, access_key, log_obj=None):
         """
@@ -286,11 +304,14 @@ class RayvisionAPI(object):
             self.log_obj('POST: {0}'.format(url))
             self.log_obj('HTTP Headers: {0}'.format(http_headers))
             self.log_obj('HTTP Body: {0}'.format(http_body))
-        
+
+        # add handler HTTPErrorProcessorNew to get HTTP400's response
+        opener = urllib2.build_opener(HTTPErrorProcessorNew)
+
         request = urllib2.Request(url, data=http_body.encode('utf-8'), headers=headers)
         
         try:
-            response = urllib2.urlopen(request, timeout=18)
+            response = opener.open(request, timeout=8)
         except Exception as e:
             return_message = e
             raise APIError(400, return_message, url)  # Bad request
