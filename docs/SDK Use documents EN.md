@@ -28,7 +28,7 @@
 **User guide:**
 
 
-![flow_chart](../images/SDK Basic User Manual.png)
+![flow_chart](../images/SDKBasicUserManual.png)
 
 
 ### 3: Sample code
