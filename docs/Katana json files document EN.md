@@ -123,7 +123,7 @@ os_name | string | Rendering operating system, "0":Linux; "1": Windows | "0"
 
 Parameters | Type | Description | Examples
 ---|---|---|---
-rendernodes | object | Render node information | [见scene_info_render.rendernodes object analysis](#scene_info_render.rendernodes)
+rendernodes | object | Render node information | [see scene_info_render.rendernodes object analysis](#scene_info_render.rendernodes)
 
 
 **<span id="scene_info_render.rendernodes">scene_info_render.rendernodes object analysis</span>**
