@@ -1,9 +1,11 @@
 ## <center> Python Render SDK(Local Analysis Version) </center>
 
+
 ### 1: About RenderSDK
     We are providing an easily executing Python-based RenderSDK to apply with our cloud rendering service.
     This is the official version of RenderSDK maintained by the Fox Render Farm / Renderbus RD&TD team.
     The SDK has been tested with python 2.7.10 and python 3.4.4.
+
 
 #### Supported software
 - [x] Maya
@@ -11,19 +13,26 @@
 - [x] Houdini
 - [x] Katana
     
+    
 ### 2: RenderSDK user guide
-**Attention：**
+
+
+**Attention:**
 
     1. A Rayvision account is required for starters
     2. You need to apply for the RenderSDK and obtain the access_id and access_key to log in. 
     3. Download RenderSDK
     4. Submit jobs follow the routine
 
-**User guide：**
 
-![flow_chart](../images/SDK Basic User Manual.png)
+**User guide:**
+
+
+![flow_chart](../images/SDKBasicUserManual.png)
+
 
 ### 3: Sample code
+
 
 ```
 #!/usr/bin/env python
@@ -61,6 +70,7 @@ rayvision.submit_job(scene_info_render_new, task_info_new)
 
 ```
 
+
 ```
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
@@ -93,16 +103,23 @@ rayvision.submit_job(scene_info_render, task_info, upload_info)
 # rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
 ```
 
+
 ### 4: Method Analysis
+
 
 ---
 
+
 #### 1. Log in
+
+
 ```
 rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
 ```
 
-**Parameter：**<br/>
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction
 ---|---|---|---
@@ -113,18 +130,25 @@ access_key | str | xxx |
 workspace | str |  | If not set up, the default path of SDK(configuration files and log files saving path) is under workspace catalogue
 
 
-**Return：**<br/>
+**Return:**<br/>
+
+
 Rayvision’s object, may use this object to call other methods
 
 
 ---
 
+
 #### 2. Set up job configuration（Plug-in settings、Project settings）
+
 
 ```
 job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
 ```
-** Parameter：**<br/>
+
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction
 ---|---|---|---
@@ -135,7 +159,9 @@ edit_name | str | hello | Plug-in configuration name, which represents the plug-
 label_name | str | defaultProject | Setting is optional, indicate the belonged job project 
 
 
-**Return：**<br/>
+**Return:**<br/>
+
+
 Parameter | Type | Value | Instruction
 ---|---|---|---
 job_id | str |  | Job id
@@ -143,12 +169,17 @@ job_id | str |  | Job id
 
 ---
 
+
 #### 3. Analysis
+
+
 ```
 scene_info_render, task_info = rayvision.analyse(cg_file=r'D:\gitlab\renderSDK\scenes\TEST_maya2016_ocean.mb')
 ```
 
-** Parameter：**<br/>
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction
 ---|---|---|---
@@ -156,42 +187,56 @@ cg_file | str |  | Scene path
 project_dir | str |  | Setting is optional, project catalogue(if setting up, just detect according asset files required for rendering in your project catalogue)  
 
 
-**Return：**<br/>
+**Return:**<br/>
+
 
 Parameter | Type | Value | Instruction
 ---|---|---|---
 scene_info_render | dict |  | The analyzed scene parameters（for rendering）, able to edit task_info | dict |  | Job parameter(for rendering), can be edited 
 
+
 ---
 
+
 #### 4. Manually check errors and cautions before proceeding
+
+
 ```
 error_info_list = rayvision.check_error_warn_info()
 ```
 
-** Parameter：**<br/>
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction
 ---|---|---|---
 language | str | '0' | 0: chinese 1: English
 
 
-**Return：**<br/>
+**Return:**<br/>
+
 
 Parameter | Type | Value | Instruction 
 ---|---|---|---
 error_info_list | list |  | Manually check & fix errors and cautions before proceeding（If errors and alert occurred, SDK is not able to be proceeded）
 
+
 ---
 
+
 #### 5.Job submit（Job parameter can be edited）
+
+
 ```
 scene_info_render_new = scene_info_render
 task_info_new = task_info
 rayvision.submit_job(scene_info_render_new, task_info_new, max_speed=100)
 ```
 
-**Parameter：**<br/>
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction 
 ---|---|---|---
@@ -200,17 +245,25 @@ task_info | dict |  | Job parameter(for rendering)
 max_speed | int | 100 | Upload speed limit.Default value is 1048576 KB/S, means 1 GB/S
 
 
-**Return：**<br/>
+**Return:**<br/>
+
+
 True
+
 
 ---
 
+
 #### 6.Download
+
+
 ```
 # rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output", max_speed=100)
 ```
 
-** Parameter：**<br/>
+
+**Parameter:**<br/>
+
 
 Parameter | Type | Value | Instruction 
 ---|---|---|---
@@ -219,6 +272,8 @@ local_dir | str |  | Local download
 max_speed | int | 100 | Download speed limit.Default value is 1048576 KB/S, means 1 GB/S
 
 
-**Return：**<br/>
+**Return:**<br/>
+
+
 True
 
