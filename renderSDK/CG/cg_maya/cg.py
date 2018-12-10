@@ -92,7 +92,7 @@ class Maya(CGBase):
                     r = re.findall(br'Maya.* (\d+\.?\d+)', i, re.I)
                     if r:
                         try:
-                            result = int(r[0].split(".")[0])
+                            result = int(r[0].split(b".")[0])
                         except Exception as e:
                             raise GetCGVersionError
 

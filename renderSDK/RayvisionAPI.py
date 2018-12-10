@@ -319,7 +319,7 @@ class RayvisionAPI(object):
         content = response.read().decode('utf-8')
         r = json.loads(content)
         if self.need_log:
-            self.log_obj('HTTP Response: {0}'.format(r))
+            self.log_obj('HTTP Response: {0}'.format(content))
 
         return_code = r.get('code', -1)
         return_message = r.get('message', 'No message!!!')

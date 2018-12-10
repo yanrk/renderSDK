@@ -12,7 +12,8 @@
 - [x] 3ds Max
 - [x] Houdini
 - [x] Katana
-    
+- [x] Cinema 4d
+
 
 ### 二、使用RenderSDK
 
@@ -65,7 +66,8 @@ error_info_list = rayvision.check_error_warn_info()
 rayvision.submit_job(scene_info_render, task_info)
 
 # 6.下载
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 
 ```
 
@@ -99,7 +101,8 @@ upload_info = {}
 rayvision.submit_job(scene_info_render, task_info, upload_info)
 
 # 4.下载
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 ```
 
 
@@ -217,16 +220,20 @@ True
 
 #### 6.下载
 ```
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output", max_speed=100)
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 ```
 
 **参数：**<br/>
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
-job_id_list | list<int> |  | 作业号列表
-local_dir | str |  | 下载存放目录
+job_id_list | list<int> | [123] | 作业号列表
+local_dir | str | "c:/renderfarm/sdk_test/output" | 下载存放目录
 max_speed | int | 100 | 下载速度限制.默认值为 1048576 KB/S, 即 1 GB/s
+print_log | bool | True | 是否打印下载命令行日志
+sleep_time | int/float | 10 | 查询任务状态的时间间隔，用以判断任务是否结束
+
 
 
 **返回：**<br/>
