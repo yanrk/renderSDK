@@ -123,15 +123,16 @@ class RayvisionManageJob(object):
         dest_list = []
         for job_status_dict in job_status_list:
             output_file_name = job_status_dict.get('output_file_name', None)
-            # is_opener = job_status_dict.get('is_opener')
+            is_opener = job_status_dict.get('is_opener')
             sub_job_status = job_status_dict.get('sub_job_status', [])
 
-            if output_file_name is not None:
-                dest_list.append(output_file_name)
-
-            if sub_job_status:
-                dest_list_sub = self._find_output_file_name_iterater(sub_job_status)
-                dest_list.extend(dest_list_sub)
+            if int(is_opener) == 1:  # have sub tasks
+                if sub_job_status:
+                    dest_list_sub = self._find_output_file_name_iterater(sub_job_status)
+                    dest_list.extend(dest_list_sub)
+            else:
+                if output_file_name is not None:
+                    dest_list.append(output_file_name)
 
         return dest_list
         
@@ -145,14 +146,15 @@ class RayvisionManageJob(object):
         dest_list = []
         for job_status_dict in job_status_list:
             job_status_code = job_status_dict.get('job_status_code', None)
-            # is_opener = job_status_dict.get('is_opener')
+            is_opener = job_status_dict.get('is_opener')
             sub_job_status = job_status_dict.get('sub_job_status', [])
 
-            if job_status_code is not None:
-                dest_list.append(job_status_code)
-
-            if sub_job_status:
-                dest_list_sub = self._find_job_status_code_iterater(sub_job_status)
-                dest_list.extend(dest_list_sub)
+            if int(is_opener) == 1:  # have sub tasks
+                if sub_job_status:
+                    dest_list_sub = self._find_job_status_code_iterater(sub_job_status)
+                    dest_list.extend(dest_list_sub)
+            else:
+                if job_status_code is not None:
+                    dest_list.append(job_status_code)
 
         return dest_list
