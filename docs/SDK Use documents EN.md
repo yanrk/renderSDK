@@ -12,6 +12,7 @@
 - [x] 3ds Max
 - [x] Houdini
 - [x] Katana
+- [x] Cinema 4d
     
     
 ### 2: RenderSDK user guide
@@ -66,7 +67,8 @@ task_info_new = task_info
 rayvision.submit_job(scene_info_render_new, task_info_new)
 
 # 6. Download
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 
 ```
 
@@ -100,7 +102,8 @@ upload_info = {}
 rayvision.submit_job(scene_info_render, task_info, upload_info)
 
 # 5. Download
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 ```
 
 
@@ -258,7 +261,8 @@ True
 
 
 ```
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output", max_speed=100)
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 ```
 
 
@@ -270,6 +274,8 @@ Parameter | Type | Value | Instruction
 job_id_list | list<int> |  | Job id list
 local_dir | str |  | Local download
 max_speed | int | 100 | Download speed limit.Default value is 1048576 KB/S, means 1 GB/S
+print_log | bool | True | Whether to display the download command line. True: display; False: not display
+sleep_time | int/float | 10 | Sleep time between download, unit is second
 
 
 **Return:**<br/>

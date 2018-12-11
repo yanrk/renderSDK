@@ -9,11 +9,12 @@ sys.path.append(renderSDK_path)
 from renderSDK.Rayvision import Rayvision
 
 # 1.Log in
-rayvision = Rayvision(domain_name='test.renderbus.com', platform='2', access_id='X', access_key='X', workspace='c:/renderfarm/sdk_test')
+rayvision = Rayvision(domain_name='task.foxrenderfarm.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
 
 # 2.Set up rendering environment(plug-in configuration, project name）
 job_id = rayvision.set_render_env(cg_name='Cinema 4D', cg_version='R19', plugin_config={}, label_name='dasdd')
 print(job_id)
+
 # 3.Set up render parameter
 scene_info_render = {
     "renderer": {
@@ -82,34 +83,6 @@ task_info = {
 
 }
 
-task_info_bak = {
-    "locationoutput": "",
-    "task_stop_time": "3600",
-    "channel": "",
-    "frames_per_task": "8",
-    "task_id": job_id,
-    "project_name": "test888",
-    "platform": "2",
-    "tiles": "",
-    "scenefile": "",
-    "is_picture": "",
-    "project_id": "3175",
-    "job_stop_time": "3600",
-    "distribute_render_node": "",
-    "stop_after_test": "0",
-    "ram": "128",
-    "render_layer_type": "",
-    "pre_frames": "000",
-    "input_project_path": "",
-    "is_layer_rendering": "",
-    "is_distribute_render": "",
-    "tiles_type": "",
-    "time_out": "11",
-    "cg_id": "2005",
-    "original_cg_file": "",
-    "input_cg_file": r"C:\Users\guokaixing\Desktop\test_c4d\test_c4d.c4d"
-}
-
 upload_info = {
     "asset": [
         {
@@ -127,5 +100,6 @@ upload_info = {
 rayvision.submit_job(scene_info_render, task_info, upload_info)
 
 # 5.Download
-# rayvision.download(job_id_list=[370271], local_dir=r"/root/chensr/renderSDK/output", max_speed=100)
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 

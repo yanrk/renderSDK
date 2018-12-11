@@ -163,7 +163,7 @@ class RayvisionTransfer(object):
             # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
             RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
 
-    def _download(self, job_id_list, local_dir, max_speed=None, **kwargs):
+    def _download(self, job_id_list, local_dir, max_speed=None, print_log=True, **kwargs):
         """
         TODO：Multiple task download
         """
@@ -172,7 +172,7 @@ class RayvisionTransfer(object):
         max_speed = str(max_speed) if max_speed is not None else "1048576"  # the unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
 
         job_status_list = self._manage_job_obj.get_job_status(job_id_list)
-        output_file_name_list = self._find_output_file_name_iterater(job_status_list)
+        output_file_name_list = self._manage_job_obj._find_output_file_name_iterater(job_status_list)
 
         for output_file_name in output_file_name_list:
             transmit_cmd = u'echo y|"{exe_path}" "{engine_type}" "{server_name}" "{server_ip}" "{server_port}" ' \
@@ -195,27 +195,4 @@ class RayvisionTransfer(object):
             # print transmit_cmd
             sys.stdout.flush()
             # os.system(transmit_cmd.encode(sys.getfilesystemencoding()))
-            RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG)
-
-
-    def _find_output_file_name_iterater(self, job_status_list):
-        """
-        Find output_file_name from job_status_list
-        :param job_status_list: self._manage_job_obj.get_job_status(job_id_list)
-        :param dest_list: dest_list
-        :return:
-        """
-        dest_list = []
-        for job_status_dict in job_status_list:
-            output_file_name = job_status_dict.get('output_file_name', None)
-            # is_opener = job_status_dict.get('is_opener')
-            sub_job_status = job_status_dict.get('sub_job_status', [])
-
-            if output_file_name is not None:
-                dest_list.append(output_file_name)
-
-            if sub_job_status:
-                dest_list_sub = self._find_output_file_name_iterater(sub_job_status)
-                dest_list.extend(dest_list_sub)
-
-        return dest_list
+            RayvisionUtil.run_cmd(transmit_cmd, log_obj=self.G_SDK_LOG if print_log is True else None)

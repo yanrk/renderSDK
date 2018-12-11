@@ -211,12 +211,13 @@ class Rayvision(object):
         self._submit_job()
 
     @decorator_use_in_class(SDK_LOG)
-    def download(self, job_id_list, local_dir, max_speed=None):
+    def download(self, job_id_list, local_dir, max_speed=None, print_log=True):
         """
         Download
         :param list<int> job_id_list:Job ID
         :param str local_dir: Download the stored directory
         :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
         """
         self.G_SDK_LOG.info('INPUT:')
         self.G_SDK_LOG.info('='*20)
@@ -224,7 +225,69 @@ class Rayvision(object):
         self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
         self.G_SDK_LOG.info('='*20)
 
-        self._transfer_obj._download(job_id_list, local_dir, max_speed)
+        self._transfer_obj._download(job_id_list, local_dir, max_speed, print_log)
+
+        return True
+        
+    @decorator_use_in_class(SDK_LOG)
+    def auto_download(self, job_id_list, local_dir, max_speed=None, print_log=False, sleep_time=10):
+        """
+        Auto download as long as any frame is complete.
+        :param list<int> job_id_list:Job ID
+        :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
+        :param int/float sleep_time: Sleep time between download, unit is second
+        """
+        self.G_SDK_LOG.info('INPUT:')
+        self.G_SDK_LOG.info('='*20)
+        self.G_SDK_LOG.info('job_id_list:{0}'.format(job_id_list))
+        self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
+        self.G_SDK_LOG.info('='*20)
+
+        while True:
+            if len(job_id_list) > 0:
+                time.sleep(float(sleep_time))
+                for job_id in job_id_list:
+                    is_job_end = self._manage_job_obj.is_job_end(job_id)
+                    self._transfer_obj._download([job_id], local_dir, max_speed, print_log)
+                    
+                    if is_job_end is True:
+                        self.G_SDK_LOG.info('The job end: {0}'.format(job_id))
+                        job_id_list.remove(job_id)
+            else:
+                break
+
+        return True
+        
+    @decorator_use_in_class(SDK_LOG)
+    def auto_download_after_job_completed(self, job_id_list, local_dir, max_speed=None, print_log=True, sleep_time=10):
+        """
+        Auto download after the job render completed.
+        :param list<int> job_id_list:Job ID
+        :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
+        :param int/float sleep_time: Sleep time between download, unit is second
+        """
+        self.G_SDK_LOG.info('INPUT:')
+        self.G_SDK_LOG.info('='*20)
+        self.G_SDK_LOG.info('job_id_list:{0}'.format(job_id_list))
+        self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
+        self.G_SDK_LOG.info('='*20)
+
+        while True:
+            if len(job_id_list) > 0:
+                time.sleep(float(sleep_time))
+                for job_id in job_id_list:
+                    is_job_end = self._manage_job_obj.is_job_end(job_id)
+                    
+                    if is_job_end is True:
+                        self.G_SDK_LOG.info('The job end: {0}'.format(job_id))
+                        self._transfer_obj._download([job_id], local_dir, max_speed, print_log)
+                        job_id_list.remove(job_id)
+            else:
+                break
 
         return True
 
