@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 
+## [1.2.1] - 2018-12-11
+### Fixed
+- Solve the problem of endless loop in auto-download function
+
+
 ## [1.2.0] - 2018-12-10
 ### Added
 - Auto-download function
