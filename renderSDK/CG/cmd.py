@@ -1,12 +1,13 @@
+#!/usr/bin/env python
 # -*-coding: utf-8 -*-
-from __future__ import print_function
-from __future__ import unicode_literals
+
+from renderSDK.compat import *
+
 import sys
 import logging
 import subprocess
 
-from renderSDK.CG import util
-from renderSDK.compat import *
+from renderSDK.RayvisionUtil import str2unicode
 
 VERSION = sys.version_info[0]
 logger = logging.getLogger("analyse")
@@ -33,13 +34,15 @@ class Cmd(object):
         cmd = self.compatible(cmd)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell)
         stdout, stderr = p.communicate()
-        stdout = util.ensure_str(stdout)
-        stderr = util.ensure_str(stderr)
+        stdout = str2unicode(stdout)
+        stderr = str2unicode(stderr)
 
         if log_output is True:
-            log("stdout:\n{0}".format(stdout))
+            log("stdout:\n")
+            log(stdout)
         if stderr:
-            log("stderr:\n{0}".format(stderr))
+            log("stderr:\n")
+            log(stderr)
         return p.returncode, stdout, stderr
 
     def power_run(self, cmd):

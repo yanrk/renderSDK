@@ -135,6 +135,7 @@ class Rayvision(object):
         :return:
         """
         cg_file = str(cg_file)
+        cg_id = self._job_info._task_info['task_info']['cg_id']
         if project_dir is not None:
             project_dir = str(project_dir)
         
@@ -147,18 +148,15 @@ class Rayvision(object):
         self.is_analyse = True
         # Pass self.job_info, directly modify job_info
         self._job_info._task_info['task_info']['input_cg_file'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['scenefile'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['cgfile'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['original_cg_file'] = cg_file.replace('\\', '/')
         if project_dir is not None:
             self._job_info._task_info['task_info']['input_project_path'] = project_dir
             
-        RayvisionAnalyse.execute(cg_file, self._job_info, exe_path=software_path)
+        RayvisionAnalyse.execute(cg_id, cg_file, self._job_info, exe_path=software_path)
         
         scene_info_data = self._job_info._task_info['scene_info']
         
         # add frames to scene_info_render.<layer>.common.frames
-        if self._job_info._task_info['task_info']['cg_id'] == '2000':  # Maya
+        if cg_id == '2000':  # Maya
             for layer_name, layer_dict in scene_info_data.items():
                 start_frame = layer_dict['common']['start']
                 end_frame = layer_dict['common']['end']
