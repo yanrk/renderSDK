@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 
-## [1.3.0] - 2018-12-11
+## [1.3.0] - 2019-01-22
 ### Added
 - Maya linux
 - VR Standalone
