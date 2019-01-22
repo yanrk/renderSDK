@@ -1,56 +1,24 @@
+#!/usr/bin/env python
 # -*-coding: utf-8 -*-
-from __future__ import unicode_literals
-from __future__ import print_function
+
 import os
 import sys
 import time
-import traceback
-import argparse
-
 from .compat import *
-
-if sys.platform.startswith('win'):
-    from .CG.cg_houdini.cg import Houdini
-    from .CG.cg_c4d.cg import C4D
-    from .CG.cg_maya.cg import Maya
-    from .CG.cg_max.cg import Max
-    
 from .RayvisionException import RayvisionError
-
-basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class RayvisionAnalyse(object):
-    def __init__(self, job_info, cg_file, exe_path=None, type=None):
+    def __init__(self, cg_id, cg_file, job_info, exe_path=None):
+        self.cg_id = cg_id
+        self.cg_file = cg_file
         self.job_info = job_info
         self.custom_exe_path = exe_path
-        self.type = type
-        self._cg_file = cg_file
-        self._cg_class = None
-        self._cg_instance = None
-        self._cg_id = None
+        self.cg_instance = self.create_instance()
 
-        self.init()
-
-    def init(self):
-        cg_file = self._cg_file
-        if not os.path.exists(cg_file):
-            raise RayvisionError(1000000, "Cg file does not exist: {0}".format(self._cg_file))
-
-        types = {
-            ".max": "Max",
-            ".mb": "Maya",
-            ".ma": "Maya",
-            ".hip": "Houdini",
-            ".c4d": "C4D",
-        }
-        ext = os.path.splitext(cg_file)[-1]
-        if ext is not None and ext.startswith("."):
-            self.type = types.get(ext.lower(), None)
-        else:
-            raise RayvisionError(1000000, "Not a cg file.")
-        if self.type is None:
-            raise RayvisionError(1000000, "Unable to determine cg file type.")
+    def create_instance(self):
+        if not os.path.exists(self.cg_file):
+            raise RayvisionError(1000000, "Cg file does not exist: {0}".format(self.cg_file))
 
         if self.custom_exe_path is not None:
             if not os.path.isabs(self.custom_exe_path):
@@ -58,41 +26,93 @@ class RayvisionAnalyse(object):
             if not os.path.isfile(self.custom_exe_path):
                 raise RayvisionError(1000000, "The specified exe path does not exist")
 
-        objs = {
-            "Max": (Max, "2001"),
-            "Maya": (Maya, "2000"),
-            "Houdini": (Houdini, "2004"),
-            "C4D": (C4D, "2005"),
+        cg_instance = None
+        cg_id = self.cg_id
+        param_dict = {
+            'cg_id': self.cg_id,
+            'cg_file': self.cg_file,
+            'job_info': self.job_info,
+            'custom_exe_path': self.custom_exe_path
         }
-        # init CG software
-        self._cg_class, self._cg_id = objs[self.type]
-        self._cg_instance = self._cg_class(cg_file=cg_file,
-                                           job_info=self.job_info,
-                                           cg_id=self._cg_id,
-                                           custom_exe_path=self.custom_exe_path,
-                                           )
+        
+        if cg_id == '2000':
+            from .CG.cg_maya.cg import Maya
+            cg_instance = Maya(**param_dict)
+        elif cg_id == '2001':
+            from .CG.cg_max.cg import Max
+            cg_instance = Max(**param_dict)
+        elif cg_id == '2002':
+            from .CG.cg_lightwave.cg import Lightwave
+            cg_instance = Lightwave(**param_dict)
+        elif cg_id == '2003':
+            from .CG.cg_arnold.cg import Arnold
+            cg_instance = Arnold(**param_dict)
+        elif cg_id == '2004':
+            from .CG.cg_houdini.cg import Houdini
+            cg_instance = Houdini(**param_dict)
+        elif cg_id == '2005':
+            from .CG.cg_c4d.cg import C4D
+            cg_instance = C4D(**param_dict)
+        elif cg_id == '2006':
+            from .CG.cg_softimage.cg import Softimage
+            cg_instance = Softimage(**param_dict)
+        elif cg_id == '2007':
+            from .CG.cg_blender.cg import Blender
+            cg_instance = Blender(**param_dict)
+        elif cg_id == '2008':
+            from .CG.cg_vray.cg import Vray
+            cg_instance = Vray(**param_dict)
+        elif cg_id == '2009':
+            from .CG.cg_mrstand.cg import Mrstand
+            cg_instance = Mrstand(**param_dict)
+        elif cg_id == '2010':
+            from .CG.cg_sketchup.cg import SketchUp
+            cg_instance = SketchUp(**param_dict)
+        elif cg_id == '2011':
+            from .CG.cg_vue.cg import VUE
+            cg_instance = VUE(**param_dict)
+        elif cg_id == '2012':
+            from .CG.cg_keyshot.cg import Keyshot
+            cg_instance = Keyshot(**param_dict)
+        elif cg_id == '2013':
+            from .CG.cg_clarisse.cg import Clarisse
+            cg_instance = Clarisse(**param_dict)
+        elif cg_id == '2014':
+            from .CG.cg_octane.cg import Octane
+            cg_instance = Octane(**param_dict)
+        elif cg_id == '2015':
+            from .CG.cg_nuke.cg import Nuke
+            cg_instance = Nuke(**param_dict)
+        elif cg_id == '2016':
+            from .CG.cg_katana.cg import Katana
+            cg_instance = Katana(**param_dict)
+        else:
+            raise RayvisionError(1000000, "The cg_id does not exist!")
+        
+        return cg_instance
 
     @classmethod
-    def execute(cls, cg_file, job_info, exe_path=None):
+    def execute(cls, cg_id, cg_file, job_info, exe_path=None):
         """
         Entrance.
-        :param cg_file:
-        :param job_info:
+        :param str cg_id: see RayvisionUtil
+        :param cg_file: scene file
+        :param job_info: 
         :param exe_path: The user can manually specify the exe path of the cg software. If you have one, use this path directly, if not, find it yourself. # TODO "Use this path directly" (1/4)
         :return:
         """
-        self = cls(job_info, cg_file, exe_path)
+        self = cls(cg_id, cg_file, job_info, exe_path)
         self.run()
 
     def run(self):
         """The whole process"""
-        self._cg_instance.run()
+        self.cg_instance.run()
 
     def analyse_cg_file(self):
-        self._cg_instance.analyse_cg_file()
+        self.cg_instance.analyse_cg_file()
 
     def analyse(self):
-        self._cg_instance.analyse()
+        self.cg_instance.analyse()
 
 
 def init_argparse():

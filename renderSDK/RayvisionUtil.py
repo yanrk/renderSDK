@@ -149,7 +149,7 @@ def str2unicode(str1, str_decode='default'):
                     except:
                         str1 = str1.decode(sys.getfilesystemencoding())
         except Exception as e:
-            print('[err]str2unicode:decode %s to str failed' % (str1))
+            print('[err]str2unicode:decode failed')
             print(e)
     return str1
 
@@ -166,7 +166,7 @@ def unicode2str(str1, str_encode='system'):
             else:
                 str1 = str1.encode(str_encode)
         except Exception as e:
-            print('[err]unicode2str:encode %s to %s failed' % (str1, str_encode))
+            print('[err]unicode2str:encode failed')
             print(e)
     else:
         print('%s is not str ' % (str1))
