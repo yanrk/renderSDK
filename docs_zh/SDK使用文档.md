@@ -1,126 +1,41 @@
-## <center> Python Render SDK(本地分析版) </center>
+SDK使用文档
+======
 
-
-### 一、了解RenderSDK
-    我们提供了一个基于Python的RenderSDK来使用我们的云渲染服务。
-    这是Fox Render Farm / Renderbus RD&TD团队维护的官方RenderSDK。
-    SDK已经通过python2.7.10和python3.4.4测试。
-    
-    
-#### 支持的软件
-- [x] Maya
-- [x] 3ds Max
-- [x] Houdini
-- [x] Katana
-- [x] Cinema 4d
-
-
-### 二、使用RenderSDK
-
-
-**注意：**
-
-
-    1.您必须有一个瑞云账号
-    2.您需要申请使用RenderSDK，获取access_id和access_key用以认证
-    3.下载RenderSDK
-    4.根据使用流程提交作业（可参考demos）
-
-    
-**使用流程：**
-
+## 一、基本流程
 
 ![flow_chart](../images/SDK基本使用流程.png)
 
 
-### 三、示例代码
+## 二、[示例代码](demos)
 
 
-```
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-示例代码一：调用瑞云分析
-"""
-import sys
-
-# 将最外层renderSDK目录加入python的搜索模块的路径集
-renderSDK_path = r'D:\gitlab\renderSDK'
-sys.path.append(renderSDK_path)
-
-from renderSDK.Rayvision import Rayvision
-
-# 1.登录
-rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
-
-# 2.设置渲染环境（插件配置、所属项目）
-job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
-
-# 3.分析
-scene_info_render, task_info = rayvision.analyse(cg_file=r'D:\gitlab\renderSDK\scenes\TEST_maya2016_ocean.mb')
-
-# 4.用户自行处理错误、警告
-error_info_list = rayvision.check_error_warn_info()
-
-# 5.用户修改参数列表（可选），并提交作业
-rayvision.submit_job(scene_info_render, task_info)
-
-# 6.下载
-rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
-# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
-
-```
+示例文件 | 示例内容 
+---|---
+api_demo.py | 单个API测试程序
+max_demo.py | 3ds Max 本地分析版 示例程序(Windows)
+maya_demo.py | Maya 本地分析版 示例程序(Windows) 
+houdini_demo.py | Houdini 本地分析版 示例程序(Windows) 
+katana_demo.py | Katana 非本地分析版 示例程序(Linux) 
+c4d_demo.py | Cinema 4d 非本地分析版 示例程序(Windows)
+vraystandalone_demo.py | VR Standalone, 非本地分析版 示例程序(Windows)
 
 
-```
-#!/usr/bin/env python
-# -*- coding:utf-8 -*-
-"""
-示例代码二：不调用瑞云分析
-"""
-import sys
-
-# 将最外层renderSDK目录加入python的搜索模块的路径集
-renderSDK_path = r'D:\gitlab\renderSDK'
-sys.path.append(renderSDK_path)
-
-from renderSDK.Rayvision import Rayvision
-
-# 1.登录
-rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
-
-# 2.设置渲染环境（插件配置、所属项目）
-job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
-
-# 3.设置参数（参见软件配置文件文档）
-scene_info_render = {}
-task_info = {}
-upload_info = {}
-
-# 4.提交作业
-rayvision.submit_job(scene_info_render, task_info, upload_info)
-
-# 4.下载
-rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
-# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
-```
-
-
-### 四、方法解析
-
+## 三、示例代码解析
 
 ---
 
 #### 1.登录
+
 ```
 rayvision = Rayvision(domain_name='task.renderbus.com', platform='2', access_id='xxx', access_key='xxx', workspace='c:/renderfarm/sdk_test')
 ```
 
 **参数：**<br/>
 
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
-domain_name | str | task.foxrenderfarm.com, task.renderbus.com | 域名，如：task.renderbus.com
+domain_name | str | task.renderbus.com | 域名，如：task.renderbus.com，不加http、https
 platform | str | 2 | 平台号，如：2
 access_id | str | xxx | 授权id，用于标识API调用者身份
 access_key | str | xxx | 授权密钥，用于加密签名字符串和服务器端验证签名字符串
@@ -134,21 +49,26 @@ Rayvision的对象，可通过此对象调用其他的方法
 ---
 
 #### 2.设置渲染环境（插件配置、所属项目）
+
 ```
 job_id = rayvision.set_render_env(cg_name='Maya', cg_version='2016', plugin_config={}, label_name='dasdd')
 ```
+
 **参数：**<br/>
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
-cg_name | str | Maya, 3ds Max, Houdini | 软件名，如3ds Max、Maya、Houdini
-cg_version | str | 2014, 2015 ... | 软件版本，houdini可能为16.5.268
+cg_name | str | Maya | 软件名。如3ds Max、Maya、Houdini，更多请参见renderSDK/RayvisionUtil.py中的cg_id_name_dict
+cg_version | str | 2014 | 软件版本，houdini可能为16.5.268
 plugin_config | dict | {"fumefx":"4.0.5", "redshift":"2.0.76"} | 如果没用插件就不需要填
 edit_name | str | hello | 渲染环境唯一标识名，暂时未用
 label_name | str | defaultProject | 标签名，即项目名，可选
 
 
 **返回：**<br/>
+
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
 job_id | str |  | 作业ID
@@ -157,11 +77,13 @@ job_id | str |  | 作业ID
 ---
 
 #### 3.分析
+
 ```
 scene_info_render, task_info = rayvision.analyse(cg_file=r'D:\gitlab\renderSDK\scenes\TEST_maya2016_ocean.mb')
 ```
 
 **参数：**<br/>
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
@@ -172,19 +94,23 @@ software_path | str |  | 本地渲染软件路径，默认从注册表中读取�
 
 **返回：**<br/>
 
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
-scene_info_render | dict |  | 分析出的场景参数（用于渲染），可修改
-task_info | dict |  | 作业参数（用于渲染），可修改
+scene_info_render | dict |  | 分析出的场景参数（用于渲染），可修改，详细信息请参见docs_zh目录中的软件配置文件文档
+task_info | dict |  | 作业参数（用于渲染），可修改，详细信息请参见docs_zh目录中的软件配置文件文档
+
 
 ---
 
 #### 4.用户自行处理错误、警告
+
 ```
 error_info_list = rayvision.check_error_warn_info()
 ```
 
 **参数：**<br/>
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
@@ -193,38 +119,49 @@ language | str | '0' | 返回语言  0：中文（默认） 1：英文
 
 **返回：**<br/>
 
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
 error_info_list | list |  | 分析出的错误、警告信息，需要用户自行处理（如有错误则SDK不能往下执行）
 
+
 ---
 
 #### 5.提交任务（可修改作业参数）
+
 ```
 rayvision.submit_job(scene_info_render, task_info, max_speed=100)
 ```
 
+
 **参数：**<br/>
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
-scene_info_render | dict |  | 场景参数（用于渲染）
-task_info | dict |  | 作业参数（用于渲染）
+scene_info_render | dict |  | 场景参数（用于渲染），详细信息请参见docs_zh目录中的软件配置文件文档
+task_info | dict |  | 作业参数（用于渲染），详细信息请参见docs_zh目录中的软件配置文件文档
 max_speed | int | 100 | 上传速度限制.默认值为 1048576 KB/S, 即 1 GB/s
 
 
 **返回：**<br/>
 True
 
+
 ---
 
 #### 6.下载
+
 ```
+# 自动下载1。只要有任何帧渲染结束，则立即自动下载出图文件到本地，直到作业完成。
 rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
-# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+
+# 自动下载2。在作业完成后，自动下载所有出图文件到本地。
+rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 ```
 
 **参数：**<br/>
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
@@ -235,14 +172,15 @@ print_log | bool | True | 是否打印下载命令行日志
 sleep_time | int/float | 10 | 查询任务状态的时间间隔，用以判断任务是否结束
 
 
-
 **返回：**<br/>
 True
 
 
-### 五、python模块解析
+### 四、Python模块解析
+
 
 #### 1.Rayvision.py
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
@@ -255,7 +193,9 @@ errors_number | int | 0 | tips.json中的错误数量，初始值为0
 error_warn_info_list | list |  | 错误、警告信息
 _job_info | 实例 |  | 类RayvisionJob的实例
 
+
 #### 2.RayvisionJob.py
+
 
 参数 | 类型 | 值 | 说明
 ---|---|---|---
@@ -276,6 +216,7 @@ _upload_info | dict |  | upload.json的内容
 
 #### 3.RayvisionTransfer.py
 
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
 _user_info |  |  | 见上
@@ -295,6 +236,7 @@ _server_port | str | 33001,8885 | 传输服务器端口
 
 #### 4.RayvisionAPI.py
 
+
 参数 | 类型 | 值 | 说明
 ---|---|---|---
 G_SDK_LOG |  | | 见上
@@ -306,12 +248,13 @@ _headers | dict | {'accessKey': 'test', 'userId': '100001', 'platform': '1', 've
 #### 5.RayvisionUtil.py
 实用方法类
 
+
 #### 6.RayvisionException.py
 异常类
 
 
-### 六、异常码参照
-api错误可以用：api编号+异常码
+### 五、异常码参照
+
 
 异常码 | 异常码描述 | 说明
 ---|---|---
