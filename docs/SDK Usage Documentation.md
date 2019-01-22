@@ -17,6 +17,7 @@ maya_demo.py | Maya, using local analysis, demo script(Windows)
 houdini_demo.py | Houdini, using local analysis, demo script(Windows) 
 katana_demo.py | Katana, not using local analysis, demo script(Linux) 
 c4d_demo.py | Cinema 4d, not using local analysis, demo script(Windows)
+vraystandalone_demo.py | VR Standalone, not using local analysis, demo script(Windows)
 
 
 ## 3: Method Analysis

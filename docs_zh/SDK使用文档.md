@@ -17,6 +17,7 @@ maya_demo.py | Maya 本地分析版 示例程序(Windows)
 houdini_demo.py | Houdini 本地分析版 示例程序(Windows) 
 katana_demo.py | Katana 非本地分析版 示例程序(Linux) 
 c4d_demo.py | Cinema 4d 非本地分析版 示例程序(Windows)
+vraystandalone_demo.py | VR Standalone, 非本地分析版 示例程序(Windows)
 
 
 ## 三、示例代码解析
