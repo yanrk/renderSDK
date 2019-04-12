@@ -5,12 +5,9 @@ import os
 import re
 import sys
 import math
+import json
+import codecs
 import traceback
-
-try:
-    import _winreg
-except ImportError:
-    import winreg as _winreg
 
 from renderSDK.CG.cg_base import CGBase
 from renderSDK.CG import util
@@ -92,7 +89,7 @@ class Maya(CGBase):
                     r = re.findall(br'Maya.* (\d+\.?\d+)', i, re.I)
                     if r:
                         try:
-                            result = int(r[0].split(".")[0])
+                            result = int(r[0].split(b".")[0])
                         except Exception as e:
                             raise GetCGVersionError
 
@@ -149,6 +146,11 @@ class Maya(CGBase):
 
     def location_from_reg(self, version):
         # for 2013/2013.5, 2016/2016.5
+        try:
+            import _winreg
+        except ImportError:
+            import winreg as _winreg
+            
         versions = (version, "{0}.5".format(version))
         location = None
         for v in versions:
@@ -168,6 +170,29 @@ class Maya(CGBase):
     def pre_analyse_custom_script(self):
         super(Maya, self).pre_analyse_custom_script()
 
+    def find_location(self):
+        log = self.log
+        version = self.version
+        if self.local_os == 'windows':
+            location = self.location_from_reg(version)
+            exe_path = self.exe_path_from_location(os.path.join(location, "bin"), self.exe_name)
+        else:
+            versions = (version, "{0}.5".format(version), "{0}-x64".format(version))
+            for v in versions:
+                exe_path = r'/usr/autodesk/maya{0}/bin/maya'.format(v)
+                if os.path.exists(exe_path):
+                    break
+                else:
+                    exe_path = None
+            
+        if exe_path is None:
+            self.tips.add(tips_code.cg_notexists, self.version_str)
+            self.tips.save()
+            raise CGExeNotExistError(error9899_cgexe_notexist.format(self.name))
+
+        self.exe_path = exe_path
+        log.info("exe_path: {0}".format(exe_path))
+        
     def analyse_cg_file(self):
         #Find the version from the cg file
         if VERSION == 3:
@@ -178,14 +203,10 @@ class Maya(CGBase):
         self.version = str(version)
         self.version_str = "{0} {1}".format(self.name, version)
         # Find the installation path with the version
-        location = self.location_from_reg(version)
-        exe_path = self.exe_path_from_location(os.path.join(location, "bin"), self.exe_name)
-        if exe_path is None:
-            self.tips.add(tips_code.cg_notexists, self.version_str)
-            self.tips.save()
-            raise CGExeNotExistError(error9899_cgexe_notexist.format(self.name))
-
-        self.exe_path = exe_path
+        if self.custom_exe_path is not None:
+            self.exe_path = self.custom_exe_path
+        else:
+            self.find_location()
 
     def valid(self):
         software_config = self.job_info._task_info["software_config"]
@@ -206,6 +227,7 @@ class Maya(CGBase):
 
     def analyse(self):
         analyse_script_name = "Analyze"
+        channel = 'api'
 
         task_path = self.job_info._task_json_path
         asset_path = self.job_info._asset_json_path
@@ -220,17 +242,33 @@ class Maya(CGBase):
             "cg_project": os.path.dirname(os.path.normpath(__file__)).replace("\\", "/"),
             "cg_plugins": self.job_info._task_info["software_config"]["plugins"],
             "cg_version": self.version,
+            "channel": channel
         }
+        options_str = json.dumps(options, ensure_ascii=False, separators=(',',':'))
         exe_path = self.exe_path
-
         script_path = os.path.dirname(os.path.normpath(__file__)).replace("\\", "/")
+        analyze_py_path = os.path.join(script_path, 'temp.py')
 
-        cmd = '"{exe_path}" -command "python \\"options={options};import sys;sys.path.insert(0, \'{script_path}\');import {analyse_script_name};reload({analyse_script_name});{analyse_script_name}.analyze_maya(options)\\"'.format(
-            exe_path=exe_path,
-            options=options,
-            script_path=script_path,
-            analyse_script_name=analyse_script_name,
-        )
+        if self.local_os == 'windows':
+            cmd = '"{exe_path}" -command "python \\"options={options};import sys;sys.path.insert(0, \'{script_path}\');import {analyse_script_name};reload({analyse_script_name});{analyse_script_name}.analyze_maya(options)\\""'.format(
+                exe_path=exe_path,
+                options=options,
+                script_path=script_path,
+                analyse_script_name=analyse_script_name,
+            )
+        else:
+            options_json = os.path.join(os.path.dirname(task_path), 'options.json')
+            with codecs.open(options_json, 'w', 'utf-8') as f_options_json:
+                json.dump(options, f_options_json, ensure_ascii=False, indent=4)
+            
+            cmd = '"{exe_path}" -batch -command "python \\\"channel,options_json=\\\\\\\"{channel}\\\\\\\",\\\\\\\"{options_json}\\\\\\\";import sys;sys.path.insert(0, \\\\\\\"{script_path}\\\\\\\");execfile(\\\\\\\"{analyze_py_path}\\\\\\\")\\\""'.format(
+                exe_path=exe_path,
+                channel=channel,
+                options_json=options_json,
+                script_path=script_path,
+                analyze_py_path=analyze_py_path,
+            )
+
         self.log.debug(cmd)
         returncode, stdout, stderr = self.cmd.run(cmd, shell=True)
         if returncode != 0:

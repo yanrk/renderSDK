@@ -135,6 +135,7 @@ class Rayvision(object):
         :return:
         """
         cg_file = str(cg_file)
+        cg_id = self._job_info._task_info['task_info']['cg_id']
         if project_dir is not None:
             project_dir = str(project_dir)
         
@@ -147,18 +148,15 @@ class Rayvision(object):
         self.is_analyse = True
         # Pass self.job_info, directly modify job_info
         self._job_info._task_info['task_info']['input_cg_file'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['scenefile'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['cgfile'] = cg_file.replace('\\', '/')
-        self._job_info._task_info['task_info']['original_cg_file'] = cg_file.replace('\\', '/')
         if project_dir is not None:
             self._job_info._task_info['task_info']['input_project_path'] = project_dir
             
-        RayvisionAnalyse.execute(cg_file, self._job_info, exe_path=software_path)
+        RayvisionAnalyse.execute(cg_id, cg_file, self._job_info, exe_path=software_path)
         
         scene_info_data = self._job_info._task_info['scene_info']
         
         # add frames to scene_info_render.<layer>.common.frames
-        if self._job_info._task_info['task_info']['cg_id'] == '2000':  # Maya
+        if cg_id == '2000':  # Maya
             for layer_name, layer_dict in scene_info_data.items():
                 start_frame = layer_dict['common']['start']
                 end_frame = layer_dict['common']['end']
@@ -192,7 +190,7 @@ class Rayvision(object):
         return self.error_warn_info_list
 
     @decorator_use_in_class(SDK_LOG)
-    def submit_job(self, scene_info_render=None, task_info=None, upload_info=None):
+    def submit_job(self, scene_info_render=None, task_info=None, upload_info=None, max_speed=None):
         """
         Submit job
         (1) Determine if there are any errors or warnings
@@ -201,19 +199,23 @@ class Rayvision(object):
         (4) Submit the job ID
         :param dict scene_info_render: rendering parameters
         :param dict task_info: task parameters
+        :param dict upload_info: upload files infomations
+        :param int max_speed: Upload speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
         """
         self._is_scene_have_error()  # check error
         
         self._edit_param(scene_info_render, task_info, upload_info)
-        self._upload()
+        self._upload(max_speed)
         self._submit_job()
 
     @decorator_use_in_class(SDK_LOG)
-    def download(self, job_id_list, local_dir):
+    def download(self, job_id_list, local_dir, max_speed=None, print_log=True):
         """
         Download
         :param list<int> job_id_list:Job ID
         :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
         """
         self.G_SDK_LOG.info('INPUT:')
         self.G_SDK_LOG.info('='*20)
@@ -221,7 +223,69 @@ class Rayvision(object):
         self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
         self.G_SDK_LOG.info('='*20)
 
-        self._transfer_obj._download(job_id_list, local_dir)
+        self._transfer_obj._download(job_id_list, local_dir, max_speed, print_log)
+
+        return True
+        
+    @decorator_use_in_class(SDK_LOG)
+    def auto_download(self, job_id_list, local_dir, max_speed=None, print_log=False, sleep_time=10):
+        """
+        Auto download as long as any frame is complete.
+        :param list<int> job_id_list:Job ID
+        :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
+        :param int/float sleep_time: Sleep time between download, unit is second
+        """
+        self.G_SDK_LOG.info('INPUT:')
+        self.G_SDK_LOG.info('='*20)
+        self.G_SDK_LOG.info('job_id_list:{0}'.format(job_id_list))
+        self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
+        self.G_SDK_LOG.info('='*20)
+
+        while True:
+            if len(job_id_list) > 0:
+                time.sleep(float(sleep_time))
+                for job_id in job_id_list:
+                    is_job_end = self._manage_job_obj.is_job_end(job_id)
+                    self._transfer_obj._download([job_id], local_dir, max_speed, print_log)
+                    
+                    if is_job_end is True:
+                        self.G_SDK_LOG.info('The job end: {0}'.format(job_id))
+                        job_id_list.remove(job_id)
+            else:
+                break
+
+        return True
+        
+    @decorator_use_in_class(SDK_LOG)
+    def auto_download_after_job_completed(self, job_id_list, local_dir, max_speed=None, print_log=True, sleep_time=10):
+        """
+        Auto download after the job render completed.
+        :param list<int> job_id_list:Job ID
+        :param str local_dir: Download the stored directory
+        :param int max_speed: Download speed limit.The unit of 'max_speed' is KB/S, default value is 1048576 KB/S, means 1 GB/S
+        :param bool print_log: Whether to display the download command line. True: display; False: not display
+        :param int/float sleep_time: Sleep time between download, unit is second
+        """
+        self.G_SDK_LOG.info('INPUT:')
+        self.G_SDK_LOG.info('='*20)
+        self.G_SDK_LOG.info('job_id_list:{0}'.format(job_id_list))
+        self.G_SDK_LOG.info('local_dir:{0}'.format(local_dir))
+        self.G_SDK_LOG.info('='*20)
+
+        while True:
+            if len(job_id_list) > 0:
+                time.sleep(float(sleep_time))
+                for job_id in job_id_list:
+                    is_job_end = self._manage_job_obj.is_job_end(job_id)
+                    
+                    if is_job_end is True:
+                        self.G_SDK_LOG.info('The job end: {0}'.format(job_id))
+                        self._transfer_obj._download([job_id], local_dir, max_speed, print_log)
+                        job_id_list.remove(job_id)
+            else:
+                break
 
         return True
 
@@ -369,7 +433,7 @@ class Rayvision(object):
         
         return True
 
-    def _upload(self):
+    def _upload(self, max_speed=None):
         cfg_list = []
         root = self._job_info._work_dir
         for file_name in os.listdir(self._job_info._work_dir):
@@ -378,7 +442,7 @@ class Rayvision(object):
             file_path = os.path.join(root, file_name)
             cfg_list.append(file_path)
 
-        self._transfer_obj._upload(self._job_info._job_id, cfg_list, self._job_info._upload_info)  # upload assets and config files
+        self._transfer_obj._upload(self._job_info._job_id, cfg_list, self._job_info._upload_info, max_speed)  # upload assets and config files
         return True
 
     def _submit_job(self):
