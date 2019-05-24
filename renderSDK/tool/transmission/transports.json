@@ -8,7 +8,7 @@
     "renderbus_www2":{
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct1.raysync.cn",
         "server_port":"10201"
     },
     "renderbus_www2_test":{
@@ -26,7 +26,7 @@
     "renderbus_www3": {
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct2.raysync.cn",
         "server_port":"10301"
     },
     "foxrenderfarm_www4": {
@@ -38,8 +38,14 @@
     "renderbus_www4": {
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct2.raysync.cn",
         "server_port":"10403"
+    },
+    "renderbus_www6": {
+        "engine_type":"typhoon",
+        "server_name":"CTCC",
+        "server_ip":"render-ct2.raysync.cn",
+        "server_port":"10601"
     },
     "foxrenderfarm_www9":{
         "engine_type":"aspera",
@@ -50,7 +56,7 @@
     "renderbus_www9":{
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct1.raysync.cn",
         "server_port":"10901"
     },
     "foxrenderfarm_gpu":{
@@ -62,19 +68,19 @@
     "renderbus_gpu":{
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct1.raysync.cn",
         "server_port":"12101"
     },
     "renderbus_pic_test":{
         "engine_type":"typhoon",
         "server_name":"MAIN",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct2.raysync.cn",
         "server_port":"10403"
     },
     "default":{
         "engine_type":"typhoon",
         "server_name":"CTCC",
-        "server_ip":"render-all.raysync.cn",
+        "server_ip":"render-ct1.raysync.cn",
         "server_port":"10201"
     }
 }
