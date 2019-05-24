@@ -17,7 +17,7 @@
         "server_ip":"test1.raysync.cn",
         "server_port":"8889"
     },
-    "foxrenderfarm_www3": {
+    "foxrenderfarm_www3":{
         "engine_type":"aspera",
         "server_name":"HKCT",
         "server_ip":"render-client.raysync.cn",

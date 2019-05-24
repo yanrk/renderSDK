@@ -49,7 +49,8 @@ upload_info = {
 }
 
 # 4.Submit job
-rayvision.submit_job(scene_info_render, task_info, upload_info)
+rayvision.submit_job(scene_info_render, task_info, upload_info, max_speed=100)
 
 # 5.Download
-# rayvision.download(job_id_list=[370271], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"/root/chensr/renderSDK/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")

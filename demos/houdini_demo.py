@@ -26,6 +26,7 @@ task_info_new = task_info
 rayvision.submit_job(scene_info_render_new, task_info_new)
 
 # 6.Download
-# rayvision.download(job_id_list=[370274], local_dir=r"d:\project\output")
+rayvision.auto_download(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
+# rayvision.auto_download_after_job_completed(job_id_list=[job_id], local_dir=r"c:/renderfarm/sdk_test/output")
 
 
